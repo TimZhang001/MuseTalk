@@ -171,6 +171,7 @@ def main(args):
         print(f"inference: {time_finish_inference - time_finish_extract_landmarks:.2f} s")
         print(f"combine audio: {time_finish_combine_audio - time_finish_inference:.2f} s")
         print(f"total time: {time_finish_combine_audio - time_start:.2f} s")
+        print(f"output video length: {len(res_frame_list)} frames")
         print("----------------------------------\n\n")
 
 if __name__ == "__main__":
