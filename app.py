@@ -33,6 +33,11 @@ from moviepy.editor import *
 ProjectDir = os.path.abspath(os.path.dirname(__file__))
 CheckpointsDir = os.path.join(ProjectDir, "models")
 
+from musetalk.utils.utils import get_file_type,get_video_fps,datagen
+from musetalk.utils.preprocessing import get_landmark_and_bbox,read_imgs,coord_placeholder,get_bbox_range
+from musetalk.utils.blending import get_image
+from musetalk.utils.utils import load_all_model
+
 def print_directory_contents(path):
     for child in os.listdir(path):
         child_path = os.path.join(path, child)
@@ -108,22 +113,6 @@ def download_model():
 
     else:
         print("Already download the model.")
-
-
-
-
-
-download_model()  # for huggingface deployment.
-
-
-from musetalk.utils.utils import get_file_type,get_video_fps,datagen
-from musetalk.utils.preprocessing import get_landmark_and_bbox,read_imgs,coord_placeholder,get_bbox_range
-from musetalk.utils.blending import get_image
-from musetalk.utils.utils import load_all_model
-
-
-
-
 
 
 @spaces.GPU(duration=600)
@@ -313,15 +302,6 @@ def inference(audio_path,video_path,bbox_shift,progress=gr.Progress(track_tqdm=T
     return output_vid_name,bbox_shift_text
 
 
-
-# load model weights
-audio_processor,vae,unet,pe  = load_all_model()
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-timesteps = torch.tensor([0], device=device)
-
-
-
-
 def check_video(video):
     if not isinstance(video, str):
         return video # in case of none type
@@ -368,6 +348,17 @@ def check_video(video):
     return output_video
 
 
+# Set the IP and port
+ip_address = "0.0.0.0"  # Replace with your desired IP address
+port_number = 7860  # Replace with your desired port number
+
+# load model weights
+audio_processor,vae,unet,pe  = load_all_model()
+device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+timesteps = torch.tensor([0], device=device)
+
+
+download_model()  # for huggingface deployment.
 
 
 css = """#input_img {max-width: 1024px !important} #output_vid {max-width: 1024px; max-height: 576px}"""
@@ -415,11 +406,6 @@ with gr.Blocks(css=css) as demo:
         ],
         outputs=[out1,bbox_shift_scale]
     )
-
-# Set the IP and port
-ip_address = "0.0.0.0"  # Replace with your desired IP address
-port_number = 7860  # Replace with your desired port number
-
 
 demo.queue().launch(
     share=False , debug=True, server_name=ip_address, server_port=port_number
