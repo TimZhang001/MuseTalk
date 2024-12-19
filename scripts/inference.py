@@ -41,7 +41,6 @@ def main(args):
     for task_id in inference_config:
 
         time_start = time.time()
-
         video_path = inference_config[task_id]["video_path"]
         audio_path = inference_config[task_id]["audio_path"]
         bbox_shift = inference_config[task_id].get("bbox_shift", args.bbox_shift)

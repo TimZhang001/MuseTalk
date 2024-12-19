@@ -55,6 +55,11 @@ def get_image(image,face,face_box,upper_boundary_ratio = 0.5,expand=1.2):
     mask_image = Image.fromarray(mask_array)
     
     face_large.paste(face, (x-x_s, y-y_s, x1-x_s, y1-y_s))
+
+    # 对人脸区域进行超分辨率处理，解决人脸区域的模糊问题
+    
+
+
     body.paste(face_large, crop_box[:2], mask_image)
     body = np.array(body)
     return body[:,:,::-1]
